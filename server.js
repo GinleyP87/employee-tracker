@@ -1,8 +1,8 @@
-const config = require('./config/connection');
+const connection = require('./config/connection');
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const sql = require("mysql2");
 
-config.connect(function (err) {
+connection.connect(function (err) {
     if (err) throw err;
     console.log("connected")
     mainPrompt()
@@ -16,9 +16,9 @@ function mainPrompt() {
             name: "task",
             message: "Would you like to do?",
             choices: [
-                "View All of the Employees",
-                "View All Employees by their Department",
-                "View All Employees by their Manager",
+                "View all of the Employees",
+                "View all employees by their Department",
+                "View all employees by their Manager",
                 "Add an Employee",
                 "Remove an Employees",
                 "Update an Employee's Role",
@@ -28,14 +28,15 @@ function mainPrompt() {
                 "End"]
         })
         .then(function ({ task }) {
+            console.log(task)
             switch (task) {
                 case "View all of the Employees":
                     viewEmployee();
                     break;
-                case "View all Employees by their Department":
+                case "View all employees by their Department":
                     viewEmployeeByDepartment();
                     break;
-                case "View Employees by their Manager":
+                case "View all employees by their Manager":
                     viewEmployeeByManager();
                     break;
                 case "Add an Employee":
@@ -53,7 +54,7 @@ function mainPrompt() {
                 case "Remove a Role":
                     removeRole();
                     break;
-                case "Update Employee MAnager":
+                case "Update an Employee Manager":
                     updateEmployeeManager();
                     break;
                 case "End":
@@ -64,10 +65,10 @@ function mainPrompt() {
 }
 
 function viewEmployee() {
-    console.log("View all of the employees.\n");
+    console.log("View all of the Employees.\n");
 
-    let query =
-        `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    let sqlquery =
+        `SELECT employee.id, employee.first_name, employee.last_name, jobRole.title, department.dept_name AS department, jobRole.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employee employee
     LEFT JOIN role role
         ON employee.jobRole_id = jobRole.id
@@ -76,7 +77,7 @@ function viewEmployee() {
     LEFT JOIN employee manager
         ON manager.id = employee.manager_id`
 
-    db.query(query, function (err, res) {
+    db.sqlquery(query, function (err, res) {
         if (err) throw err;
 
         console.table(res);
