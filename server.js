@@ -16,26 +16,26 @@ function mainPrompt() {
             name: "task",
             message: "Would you like to do?",
             choices: [
-                "View All Employees",
-                "View All Employees by Department",
-                "View All Employees by Manager",
+                "View All of the Employees",
+                "View All Employees by their Department",
+                "View All Employees by their Manager",
                 "Add an Employee",
-                "Remove Employees",
-                "Update Employee Role",
-                "Add Role",
-                "Remove Role",
-                "Update Employee Manager",
+                "Remove an Employees",
+                "Update an Employee's Role",
+                "Add a Role",
+                "Remove a Role",
+                "Update an Employee Manager",
                 "End"]
         })
         .then(function ({ task }) {
             switch (task) {
-                case "View all Employees":
+                case "View all of the Employees":
                     viewEmployee();
                     break;
                 case "View all Employees by their Department":
                     viewEmployeeByDepartment();
                     break;
-                case "View Employees by Manager":
+                case "View Employees by their Manager":
                     viewEmployeeByManager();
                     break;
                 case "Add an Employee":
@@ -44,46 +44,44 @@ function mainPrompt() {
                 case "Remove an Employee":
                     removeEmployees();
                     break;
-                case "Update Employee Role":
+                case "Update an Employee's Role":
                     updateEmployeeRole();
                     break;
-                case "Add Role":
+                case "Add a Role":
                     addRole();
                     break;
-                case "Remove Role":
+                case "Remove a Role":
                     removeRole();
                     break;
                 case "Update Employee MAnager":
                     updateEmployeeManager();
                     break;
-
                 case "End":
-                    connection.end();
+                    db.end();
                     break;
             }
         });
 }
 
 function viewEmployee() {
-    console.log("Viewing all employees.\n");
+    console.log("View all of the employees.\n");
 
-    var query =
+    let query =
         `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employee employee
     LEFT JOIN role role
-        ON employee.role_id = role.id
+        ON employee.jobRole_id = jobRole.id
     LEFT JOIN department department
-        ON department.id = role.department_id
+        ON department.id = jobRole.department_id
     LEFT JOIN employee manager
         ON manager.id = employee.manager_id`
 
-    connection.query(query, function (err, res) {
+    db.query(query, function (err, res) {
         if (err) throw err;
 
         console.table(res);
-        console.log("Here are your Employees!\n");
+        console.log("These are all of your Employees!\n");
 
         mainPrompt();
     });
-    // console.log(query.sql);
 }
